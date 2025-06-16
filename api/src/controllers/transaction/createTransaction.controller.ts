@@ -10,8 +10,8 @@ const createTransaction = async (
   req: FastifyRequest<{ Body: CreateTransactionSchema }>,
   res: FastifyReply,
 ) => {
-  const userId = '684f6f43d0b9367196b9c670';
-  // Simulate user authentication
+  const userId = req.userId;
+
   if (!userId) {
     res.status(401).send('Unauthorized');
     return;

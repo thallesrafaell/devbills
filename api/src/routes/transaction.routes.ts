@@ -1,10 +1,12 @@
 import { FastifyInstance } from 'fastify';
 import zodToJsonSchema from 'zod-to-json-schema';
 
+import logger from '../config/logger';
 import createTransaction from '../controllers/transaction/createTransaction.controller';
 import { deleteTransaction } from '../controllers/transaction/deleteTransaction.controller';
 import { getTransactions } from '../controllers/transaction/getTransactions.controller';
 import { getTransactionsSummary } from '../controllers/transaction/getTransactionsSummary.controller';
+import { authMiddleware } from '../middlewares/auth.middleware';
 import {
   createTransactionSchema,
   deleteTransactionSchema,
@@ -13,6 +15,9 @@ import {
 } from '../schemas/transaction.schema';
 
 const transactionRoutes = async (fastify: FastifyInstance): Promise<void> => {
+  logger.info('Registering transaction routes');
+  fastify.addHook('preHandler', authMiddleware);
+
   // Define the route for creating a transaction
   fastify.route({
     method: 'POST',
@@ -51,6 +56,7 @@ const transactionRoutes = async (fastify: FastifyInstance): Promise<void> => {
     },
     handler: deleteTransaction,
   });
+  logger.info('Transaction routes registered successfully');
 };
 
 export default transactionRoutes;

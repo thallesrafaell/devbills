@@ -14,8 +14,8 @@ export const getTransactionsSummary = async (
   req: FastifyRequest<{ Querystring: GetTransactionsSummarySchema }>,
   res: FastifyReply,
 ): Promise<void> => {
-  const userId = '684f6f43d0b9367196b9c670';
-  // Simulate user authentication
+  const userId = req.userId;
+
   if (!userId) {
     req.log.error('User not authenticated');
     res.status(401).send('Unauthorized');
