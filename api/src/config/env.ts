@@ -9,7 +9,7 @@ dotenv.config();
 const envSchema = z.object({
   // Variables required for the application to run
   PORT: z.string().transform(Number).default('3000'),
-  NODE_ENV: z.enum(['dev', 'prod', 'test']).default('development'),
+  NODE_ENV: z.enum(['dev', 'prod', 'test']),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL é obrigatória'),
 
   // Firebase variables
