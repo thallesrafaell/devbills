@@ -1,5 +1,6 @@
 import { Category, TransactionType } from '@prisma/client';
 
+import logger from '../config/logger';
 import prisma from '../config/prisma';
 type GlobalCategoryInput = Pick<Category, 'name' | 'color' | 'type'>;
 
@@ -39,15 +40,17 @@ export const iniitializeGlobalCategories = async (): Promise<Category[]> => {
             type: category.type,
           },
         });
-        createCategory.push(newCategory);
-        console.log(`✅ Category "${newCategory.name}" created successfully.`);
-      } else {
-        console.log(`🚨 Category "${category.name}" already exists.`);
+        logger.info(`Category "${newCategory.name}" created successfully.`);
       }
     } catch (error) {
-      console.error(` Error creating category "${category.name}":`, error);
+      logger.error(`Failed to create category "${category.name}": ${error}`);
       throw new Error(`Failed to create category "${category.name}": ${error}`);
     }
+  }
+  if (createCategory.length === 0) {
+    logger.info(
+      'No new categories were created. All global categories already exist.',
+    );
   }
   return createCategory;
 };
