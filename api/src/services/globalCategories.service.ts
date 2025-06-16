@@ -1,6 +1,6 @@
 import { Category, TransactionType } from '@prisma/client';
 
-import prisma from '../config /prisma';
+import prisma from '../config/prisma';
 type GlobalCategoryInput = Pick<Category, 'name' | 'color' | 'type'>;
 
 const globalCategories: GlobalCategoryInput[] = [
