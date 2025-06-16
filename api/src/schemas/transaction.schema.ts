@@ -39,5 +39,13 @@ export const getTransactionSchema = z.object({
     .optional(),
 });
 
+export const getTransactionsSummarySchema = z.object({
+  month: z.string({ required_error: 'Month is required' }),
+  year: z.string({ required_error: 'Year is required' }),
+});
+
 export type CreateTransactionSchema = z.infer<typeof createTransactionSchema>;
 export type GetTransactionSchema = z.infer<typeof getTransactionSchema>;
+export type GetTransactionsSummarySchema = z.infer<
+  typeof getTransactionsSummarySchema
+>;

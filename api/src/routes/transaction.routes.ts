@@ -3,9 +3,11 @@ import zodToJsonSchema from 'zod-to-json-schema';
 
 import createTransaction from '../controllers/transaction/createTransaction.controller';
 import { getTransactions } from '../controllers/transaction/getTransactions.controller';
+import { getTransactionsSummary } from '../controllers/transaction/getTransactionsSummary.controller';
 import {
   createTransactionSchema,
   getTransactionSchema,
+  getTransactionsSummarySchema,
 } from '../schemas/transaction.schema';
 
 const transactionRoutes = async (fastify: FastifyInstance): Promise<void> => {
@@ -26,6 +28,16 @@ const transactionRoutes = async (fastify: FastifyInstance): Promise<void> => {
       querystring: zodToJsonSchema(getTransactionSchema),
     },
     handler: getTransactions,
+  });
+
+  // Define the route for getting resume by date
+  fastify.route({
+    method: 'GET',
+    url: '/resume',
+    schema: {
+      querystring: zodToJsonSchema(getTransactionsSummarySchema),
+    },
+    handler: getTransactionsSummary,
   });
 };
 
