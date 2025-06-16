@@ -1,3 +1,4 @@
+import cors from '@fastify/cors';
 import Fastify, { FastifyInstance } from 'fastify';
 
 import { env } from './config/env';
@@ -19,6 +20,12 @@ const app: FastifyInstance = Fastify({
 
 // Register routes
 app.register(routes, { prefix: '/api' });
+
+// Register CORS plugin
+app.register(cors, {
+  origin: env.CORS_ORIGIN, // Allow all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
+});
 
 // export the Fastify instance
 export default app;

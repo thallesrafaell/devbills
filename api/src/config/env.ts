@@ -11,6 +11,7 @@ const envSchema = z.object({
   PORT: z.string().transform(Number).default('3000'),
   NODE_ENV: z.enum(['dev', 'prod', 'test']),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL é obrigatória'),
+  CORS_ORIGIN: z.string(),
 
   // Firebase variables
   FIREBASE_TYPE: z.string().optional(),
