@@ -25,6 +25,7 @@
   },
   "description": "",
   "dependencies": {
+    "dotenv": "^16.5.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "fastify": "^5.4.0"

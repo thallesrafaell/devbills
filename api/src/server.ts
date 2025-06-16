@@ -1,6 +1,11 @@
+import dotenv from 'dotenv';
+
 import app from './app';
 
-const PORT = 3001;
+// Carrega variáveis de .env.local
+dotenv.config();
+
+const PORT = Number(process.env.PORT) || 3001;
 
 const startServer = async () => {
   try {
