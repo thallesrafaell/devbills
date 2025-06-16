@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+  expense
+  income
+}
+
+model Category {
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  color     String
+  type      TransactionType
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  // Relação com transações
+  transactions Transaction[]
+  
+  // Índice único para evitar duplicação de categorias por nome e tipo
+  @@unique([name, type])
+}
+
+model Transaction {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  amount      Float
+  date        DateTime
+  type        TransactionType
+  userId      String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  // Relação com categoria
+  categoryId  String          @db.ObjectId
+  category    Category        @relation(fields: [categoryId], references: [id])
+
+  // Índices para melhorar a performance de consultas
+  @@index([userId, date])
+  @@index([userId, categoryId, date])
+}
