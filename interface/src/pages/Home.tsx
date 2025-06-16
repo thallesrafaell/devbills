@@ -1,3 +1,5 @@
+import Button from '../components/button';
+
 const Home = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -5,9 +7,9 @@ const Home = () => {
       <p className="text-lg text-gray-400">
         This is a simple React application.
       </p>
-      <button className="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+      <Button variant="success" isLoading className="mt-6">
         Get Started
-      </button>
+      </Button>
     </div>
   );
 };
