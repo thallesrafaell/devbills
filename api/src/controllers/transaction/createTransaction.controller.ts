@@ -1,9 +1,15 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import prisma from '../../config/prisma';
-import { createTransactionSchema } from '../../schemas/transaction.schema';
+import {
+  CreateTransactionSchema,
+  createTransactionSchema,
+} from '../../schemas/transaction.schema';
 
-const createTransaction = async (req: FastifyRequest, res: FastifyReply) => {
+const createTransaction = async (
+  req: FastifyRequest<{ Body: CreateTransactionSchema }>,
+  res: FastifyReply,
+) => {
   const userId = '684f6f43d0b9367196b9c670';
   // Simulate user authentication
   if (!userId) {

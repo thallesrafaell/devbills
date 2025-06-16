@@ -20,3 +20,24 @@ export const createTransactionSchema = z.object({
     errorMap: () => ({ message: 'Type must be either "income" or "expense"' }),
   }),
 });
+
+export const getTransactionSchema = z.object({
+  month: z.string().optional(),
+  year: z.string().optional(),
+  type: z
+    .enum([TransactionType.income, TransactionType.expense], {
+      errorMap: () => ({
+        message: 'Type must be either "income" or "expense"',
+      }),
+    })
+    .optional(),
+  categoryId: z
+    .string()
+    .refine(isValidObjectId, {
+      message: 'Invalid category ID',
+    })
+    .optional(),
+});
+
+export type CreateTransactionSchema = z.infer<typeof createTransactionSchema>;
+export type GetTransactionSchema = z.infer<typeof getTransactionSchema>;
