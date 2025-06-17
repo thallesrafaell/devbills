@@ -39,7 +39,7 @@ export default tseslint.config(
       // Regras gerais
       '@typescript-eslint/no-unused-vars': 'error',
       'no-unused-vars': 'off', // Desativa a regra nativa em favor da versão do TypeScript
-      'no-console': 'off',
+      'no-console': 'warn',
       'no-throw-literal': 'warn',
 
       // Regras de formatação relacionadas ao Prettier
