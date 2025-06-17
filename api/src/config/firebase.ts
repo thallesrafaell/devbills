@@ -4,6 +4,22 @@ import { env } from './env';
 import logger from './logger';
 
 const initializeFirebaseAdmin = (): void => {
+  if (admin.apps.length > 0) {
+    logger.info('Firebase Admin already initialized');
+    return;
+  }
+  // Check if required environment variables are set
+  if (
+    !env.FIREBASE_PROJECT_ID ||
+    !env.FIREBASE_CLIENT_EMAIL ||
+    !env.FIREBASE_PRIVATE_KEY
+  ) {
+    logger.error('Missing Firebase configuration environment variables');
+    throw new Error(
+      'Firebase configuration is incomplete. Please check your environment variables.',
+    );
+  }
+
   try {
     if (admin.apps.length === 0) {
       if (env.FIREBASE_PROJECT_ID) {
@@ -15,10 +31,6 @@ const initializeFirebaseAdmin = (): void => {
           }),
         });
       }
-    } else {
-      admin.initializeApp({
-        credential: admin.credential.applicationDefault(),
-      });
     }
     logger.info('Firebase Admin initialized successfully');
   } catch (error) {
