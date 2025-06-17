@@ -19,6 +19,7 @@ interface AuthContextProps {
   authState: AuthState;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  refreshToken: () => Promise<string | null>; // Nova função para atualizar token explicitamente
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -27,13 +28,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     error: null,
-    isLoading: false,
+    isLoading: true, // Começa como true para indicar carregamento inicial
   });
 
   const signInWithGoogle = async (): Promise<void> => {
-    setAuthState(prevState => ({ ...prevState, isLoading: true }));
+    setAuthState(prevState => ({ ...prevState, isLoading: true, error: null }));
     try {
       await signInWithPopup(firebaseAuth, googleAuthProvider);
+      // Não precisa atualizar o estado aqui, pois onAuthStateChanged irá capturar a mudança
     } catch (error) {
       console.error('Error signing in with Google:', error);
       setAuthState(prevState => ({
@@ -43,9 +45,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }));
     }
   };
+
   const signOut = async () => {
+    setAuthState(prevState => ({ ...prevState, isLoading: true, error: null }));
     try {
       await firebaseSignOut(firebaseAuth);
+      // Não precisa atualizar o estado aqui, pois onAuthStateChanged irá capturar a mudança
     } catch (error) {
       console.error('Error signing out:', error);
       setAuthState(prevState => ({
@@ -56,10 +61,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Função para forçar a atualização do token
+  const refreshToken = async (): Promise<string | null> => {
+    const currentUser = firebaseAuth.currentUser;
+    if (!currentUser) return null;
+
+    try {
+      const token = await currentUser.getIdToken(true); // true força atualização
+      return token;
+    } catch (error) {
+      console.error('Erro ao atualizar token:', error);
+      return null;
+    }
+  };
+
   useEffect(() => {
+    console.log('Configurando listener de autenticação...');
+
     const unsubscribe = onAuthStateChanged(
       firebaseAuth,
       user => {
+        console.log(
+          'Estado de autenticação alterado:',
+          user ? 'Usuário logado' : 'Usuário deslogado',
+        );
+
         if (user) {
           setAuthState({
             user: mapUserData(user),
@@ -91,7 +117,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   return (
-    <AuthContext.Provider value={{ authState, signInWithGoogle, signOut }}>
+    <AuthContext.Provider
+      value={{ authState, signInWithGoogle, signOut, refreshToken }}
+    >
       {children}
     </AuthContext.Provider>
   );
