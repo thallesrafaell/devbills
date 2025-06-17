@@ -6,6 +6,7 @@ import Dashboard from '../pages/Dashboard';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import NotFoundPage from '../pages/NotFoundPage';
+import Transaction from '../pages/Transaction';
 import PrivateRoutes from './PrivateRoutes';
 
 const AppRoutes = () => {
@@ -23,6 +24,8 @@ const AppRoutes = () => {
             {/* Wrap private routes in AppLayout for consistent layout */}
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/transactions" element={<Transaction />} />
+              {/* Add more private routes here as needed */}
             </Route>
           </Route>
         </Routes>

@@ -35,7 +35,7 @@ const Header = () => {
             </li>
             <li>
               <a
-                href="#"
+                href="/transactions"
                 className={`${location.pathname === '/transactions' ? 'text-primary-500  bg-primary-500/10 rounded-sm' : 'text-gray-400'} text-sm py-2 px-3 rounded-sm hover:text-primary-500 transition-all duration-200`}
               >
                 Transações

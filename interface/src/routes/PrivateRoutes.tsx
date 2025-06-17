@@ -5,7 +5,8 @@ import { useAuth } from '../context/AuthContext';
 const PrivateRoutes = () => {
   const { authState } = useAuth();
 
-  if (!authState) {
+  // If the user is not authenticated, redirect to login
+  if (!authState.user) {
     return <Navigate to="/auth/login" replace />;
   }
 
