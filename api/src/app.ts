@@ -18,14 +18,14 @@ const app: FastifyInstance = Fastify({
   },
 });
 
-// Register routes
-app.register(routes, { prefix: '/api' });
-
 // Register CORS plugin
 app.register(cors, {
-  origin: env.CORS_ORIGIN, // Allow all origins
+  origin: 'http://localhost:5173', // Allow all origins
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
 });
+
+// Register routes
+app.register(routes, { prefix: '/api' });
 
 // export the Fastify instance
 export default app;
