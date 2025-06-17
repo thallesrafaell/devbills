@@ -9,6 +9,7 @@ interface Feature {
 }
 
 const Home = () => {
+  const currentYear = new Date().getFullYear();
   const features: Feature[] = [
     {
       title: 'Controle Financeiro',
@@ -76,7 +77,9 @@ const Home = () => {
                   key={index}
                   className="bg-gray-800 p-6 rounded-xl hover:shadow-lg"
                 >
-                  <div className="flex items-center mb-4">{feature.icon}</div>
+                  <div className="mb-4 bg-primary/10 p-3 rounded-full inline-block">
+                    {feature.icon}
+                  </div>
                   <h3 className="text-xl font-semibold text-white mb-2">
                     {feature.title}
                   </h3>
@@ -86,6 +89,34 @@ const Home = () => {
             </div>
           </div>
         </section>
+        {/** Section CTA*/}
+        <section className="py-12 md:py-20">
+          <div className="bg-gray-900 p-8 md:p-12 rounded-xl text-center border border-solid border-gray-600">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+              Pronto para organizar suas finanças?
+            </h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8">
+              Comece a usar o DevBills hoje mesmo e tenha o controle total sobre
+              seu dinheiro. É gratuito e fácil de usar!
+            </p>
+            <div className="flex justify-center mt-6">
+              <Button className="text-center py-3 px-6">
+                Criar Conta Gratuita
+              </Button>
+            </div>
+          </div>
+        </section>
+        {/* Footer */}
+        <footer className="py-8 border-t border-border">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+              <h3 className="text-md font-bold text-primary-500">DevBills</h3>
+              <p className="text-text-muted text-sm">
+                © {currentYear} - Todos os direitos reservados
+              </p>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );
