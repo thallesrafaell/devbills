@@ -4,9 +4,18 @@ import GoogleLoginButton from '../components/google-login-button';
 import { firebaseAuth, googleAuthProvider } from '../config/firebase';
 
 const Login = () => {
+<<<<<<< HEAD
   {
     /** Handle user login */
   }
+=======
+<<<<<<< HEAD
+  {
+    /** Handle user login */
+  }
+=======
+>>>>>>> 615653e7ed3245848e02df472e1349ecf5733926
+>>>>>>> 8bed5fee14d0cfd22bee849ada19dfacc6c9895c
   const handleLogin = async () => {
     const result = await signInWithPopup(firebaseAuth, googleAuthProvider);
     console.log('User signed in:', result.user);
