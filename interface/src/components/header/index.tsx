@@ -1,11 +1,13 @@
 import { LogOutIcon, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { useLocation } from 'react-router';
 
 import { useAuth } from '../../context/AuthContext';
 
 const Header = () => {
   const { authState, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -25,18 +27,18 @@ const Header = () => {
           <ul className="hidden md:flex space-x-4">
             <li>
               <a
-                href="#"
-                className="text-lg text-primary-500 py-2 px-3 bg-primary-500/10 rounded-sm hover:text-primary-500"
+                href="/dashboard"
+                className={`${location.pathname === '/dashboard' ? 'text-primary-500  bg-primary-500/10 rounded-sm' : 'text-gray-400'} text-sm py-2 px-3 rounded-sm hover:text-primary-500 transition-all duration-200`}
               >
-                Transações
+                Dashboard
               </a>
             </li>
             <li>
               <a
                 href="#"
-                className="text-lg text-primary-500 py-2 px-3 bg-primary-500/10 rounded-sm hover:text-primary-500"
+                className={`${location.pathname === '/transactions' ? 'text-primary-500  bg-primary-500/10 rounded-sm' : 'text-gray-400'} text-sm py-2 px-3 rounded-sm hover:text-primary-500 transition-all duration-200`}
               >
-                Dashboard
+                Transações
               </a>
             </li>
           </ul>
@@ -47,9 +49,9 @@ const Header = () => {
               <img
                 src={authState.user.photoURL || ''}
                 alt={authState.user.displayName || ''}
-                className="h-8 w-8 rounded-full"
+                className="h-7 w-7 rounded-full border-primary-500/60 border-1 object-cover"
               />
-              <span className="hidden md:block text-gray-600">
+              <span className="hidden md:block text-sm text-gray-600">
                 {authState.user.displayName}
               </span>
             </div>
