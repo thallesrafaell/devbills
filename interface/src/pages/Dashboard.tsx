@@ -1,26 +1,32 @@
-import {
-  ArrowBigDownDashIcon,
-  ArrowBigUpDashIcon,
-  CalendarIcon,
-  Wallet,
-} from 'lucide-react';
+import { ArrowBigDownDashIcon, ArrowBigUpDashIcon, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Card, CardBody, CardHeader, CardSubtitle } from '../components/card';
+import Chart, { type ExpenseCategory } from '../components/charts';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 
+type Summary = {
+  totalBalance: number;
+  totalIncome: number;
+  totalExpense: number;
+  expenseByCategory: ExpenseCategory[];
+};
+
 const Dashboard = () => {
   const { authState } = useAuth();
-  const [summary, setSummary] = useState([]);
+  const [summary, setSummary] = useState<Summary>([]);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     // Só executar quando a autenticação estiver pronta e o usuário estiver logado
     if (!authState.isLoading && authState.user) {
       async function getTransaction() {
         setIsLoading(true);
         try {
-          const response = await api.get('/resume?month=04&year=2025');
+          const response = await api.get(
+            '/transactions/resume?month=04&year=2025',
+          );
           console.log(response.data);
           setSummary(response.data);
         } catch (error) {
@@ -59,26 +65,51 @@ const Dashboard = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <Card>
-          <CardHeader title="Despesas" icon={<Wallet />} />
+          <CardHeader title="Saldo" icon={<Wallet />} />
           <CardSubtitle subtitle="Saldo total do mês" />
           <CardBody>
-            <p>R$300,00</p>
+            <p>
+              {summary
+                ? Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  }).format(summary.totalBalance)
+                : 'Carregando...'}
+            </p>
           </CardBody>
         </Card>
         <Card>
           <CardHeader title="Receitas" icon={<ArrowBigUpDashIcon />} />
           <CardSubtitle subtitle="Saldo total do mês" />
           <CardBody>
-            <p>R$300,00</p>
+            <p>
+              {summary
+                ? Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  }).format(summary.totalIncome)
+                : 'Carregando...'}
+            </p>
           </CardBody>
         </Card>
         <Card>
           <CardHeader title="Saldo" icon={<ArrowBigDownDashIcon />} />
           <CardSubtitle subtitle="Saldo total do mês" />
           <CardBody>
-            <p>R$300,00</p>
+            <p>
+              {summary
+                ? Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  }).format(summary.totalExpense)
+                : 'Carregando...'}
+            </p>
           </CardBody>
         </Card>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Chart expenseByCategory={summary.expenseByCategory} />
+        <Chart expenseByCategory={summary.expenseByCategory} />
       </div>
     </div>
   );
