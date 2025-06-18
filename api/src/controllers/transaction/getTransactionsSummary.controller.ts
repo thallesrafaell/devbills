@@ -1,3 +1,5 @@
+import 'dayjs/locale/pt-br'; // Adicione esta linha para importar o locale português
+
 import { TransactionType } from '@prisma/client';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -9,6 +11,7 @@ import { CategorySummary } from '../../types/catetgory.type';
 import { Summary } from '../../types/transaction.types';
 
 dayjs.extend(utc);
+dayjs.locale('pt-br');
 
 export const getTransactionsSummary = async (
   req: FastifyRequest<{ Querystring: GetTransactionsSummarySchema }>,
@@ -74,6 +77,80 @@ export const getTransactionsSummary = async (
       }
     }
 
+    // Log the total income and expense for debugging
+    const lastFourMonths = Array.from({ length: 4 }, (_, i) => {
+      const date = dayjs
+        .utc()
+        .subtract(3 - i, 'month')
+        .startOf('month');
+
+      const start = date.toDate();
+      const end = date.endOf('month').toDate();
+      return {
+        date, // keep the dayjs object for later use
+        month:
+          date.format('MMMM').charAt(0).toUpperCase() +
+          date.format('MMMM').slice(1),
+
+        year: date.year(),
+        start,
+        end,
+      };
+    });
+
+    // Fetch transactions for the last four months
+    const lastFourMonthsTransactions = await Promise.all(
+      lastFourMonths.map(async ({ date, start, end }) => {
+        const transactions = await prisma.transaction.findMany({
+          where: {
+            userId,
+            date: {
+              gte: start,
+              lte: end,
+            },
+          },
+          include: {
+            category: true,
+          },
+        });
+        let monthIncome = 0;
+        let monthExpense = 0;
+        const monthGroupedExpenses = new Map<string, CategorySummary>();
+        for (const transaction of transactions) {
+          if (transaction.type === TransactionType.expense) {
+            monthExpense += transaction.amount;
+
+            const existing = monthGroupedExpenses.get(
+              transaction.categoryId,
+            ) ?? {
+              categoryId: transaction.category.id,
+              categoryName: transaction.category.name,
+              categoryColor: transaction.category.color,
+              amount: 0,
+              percentage: 0,
+            };
+
+            existing.amount += transaction.amount;
+            monthGroupedExpenses.set(transaction.categoryId, existing);
+          } else {
+            monthIncome += transaction.amount;
+          }
+        }
+        return {
+          month:
+            date.format('MMMM').charAt(0).toUpperCase() +
+            date.format('MMMM').slice(1),
+
+          year: date.year(),
+          income: monthIncome,
+          expense: monthExpense,
+          balance: monthIncome - monthExpense,
+        };
+      }),
+    );
+
+    console.log('Last four months transactions:', lastFourMonthsTransactions);
+
     // Prepare the summary object
     const summary: Summary = {
       totalIncome,
@@ -87,6 +164,7 @@ export const getTransactionsSummary = async (
           ),
         }))
         .sort((a, b) => b.amount - a.amount),
+      lastFourMonths: lastFourMonthsTransactions,
     };
 
     res.send(summary);

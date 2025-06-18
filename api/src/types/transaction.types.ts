@@ -17,4 +17,20 @@ export interface Summary {
   totalIncome: number;
   totalBalance: number;
   expenseByCategory: CategorySummary[];
+  lastFourMonths: MonthSummary[];
 }
+
+export interface MonthSummary {
+  month: string;
+  year: number;
+  income: number;
+  expense: number;
+  balance: number;
+}
+
+//{
+//name: 'Março',
+//despesas: 3200,
+//receitas: 4500,
+//saldo: 1300, // receitas - despesas
+//}
