@@ -1,8 +1,10 @@
 import { ArrowBigDownDashIcon, ArrowBigUpDashIcon, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import BarChart, { type BarChartData } from '../components/bar-chart';
 import { Card, CardBody, CardHeader, CardSubtitle } from '../components/card';
 import Chart, { type ExpenseCategory } from '../components/charts';
+import LastTransactions from '../components/last-transactions';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 
@@ -11,6 +13,7 @@ type Summary = {
   totalIncome: number;
   totalExpense: number;
   expenseByCategory: ExpenseCategory[];
+  lastFourMonths: BarChartData[];
 };
 
 const Dashboard = () => {
@@ -24,10 +27,9 @@ const Dashboard = () => {
       async function getTransaction() {
         setIsLoading(true);
         try {
-          const response = await api.get(
+          const response: { data: Summary } = await api.get(
             '/transactions/resume?month=04&year=2025',
           );
-          console.log(response.data);
           setSummary(response.data);
         } catch (error) {
           console.error('Erro ao buscar transações:', error);
@@ -64,7 +66,7 @@ const Dashboard = () => {
           !
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
         <Card>
           <CardHeader title="Saldo" icon={<Wallet />} />
           <CardSubtitle subtitle="Saldo total do mês" />
@@ -112,9 +114,10 @@ const Dashboard = () => {
           </CardBody>
         </Card>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_250px] gap-4">
         <Chart expenseByCategory={summary.expenseByCategory} />
-        <Chart expenseByCategory={summary.expenseByCategory} />
+        <BarChart data={summary.lastFourMonths} />
+        <LastTransactions />
       </div>
     </div>
   );

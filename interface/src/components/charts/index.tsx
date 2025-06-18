@@ -54,6 +54,13 @@ const Chart: React.FC<ChartProps> = ({ expenseByCategory = [] }) => {
             <Tooltip
               formatter={value => `R$ ${value.toLocaleString()}`}
               labelFormatter={name => name}
+              contentStyle={{
+                backgroundColor: '#1F2937',
+                border: 'none',
+                borderRadius: '4px',
+              }}
+              itemStyle={{ color: '#FFFFFF' }}
+              labelStyle={{ color: '#FFFFFF', fontWeight: 'bold' }}
             />
             <Legend />
           </PieChart>
