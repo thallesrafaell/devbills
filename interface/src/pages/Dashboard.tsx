@@ -59,8 +59,9 @@ const Dashboard = () => {
         <p className="text-gray-200 mb-4">
           Bem-vindo,{' '}
           <span className="font-semibold text-primary-500">
-            {authState.user?.displayName}!
+            {authState.user?.displayName}
           </span>
+          !
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -68,7 +69,9 @@ const Dashboard = () => {
           <CardHeader title="Saldo" icon={<Wallet />} />
           <CardSubtitle subtitle="Saldo total do mês" />
           <CardBody>
-            <p>
+            <p
+              className={`text-xl font-bold ${summary?.totalBalance < 0 ? 'text-red-500' : 'text-green-500'}`}
+            >
               {summary
                 ? Intl.NumberFormat('pt-BR', {
                     style: 'currency',
@@ -80,9 +83,11 @@ const Dashboard = () => {
         </Card>
         <Card>
           <CardHeader title="Receitas" icon={<ArrowBigUpDashIcon />} />
-          <CardSubtitle subtitle="Saldo total do mês" />
+          <CardSubtitle subtitle="Receitas totais do mês" />
           <CardBody>
-            <p>
+            <p
+              className={`text-xl font-bold ${summary?.totalIncome < 0 ? 'text-red-500' : 'text-green-500'}`}
+            >
               {summary
                 ? Intl.NumberFormat('pt-BR', {
                     style: 'currency',
@@ -94,9 +99,9 @@ const Dashboard = () => {
         </Card>
         <Card>
           <CardHeader title="Saldo" icon={<ArrowBigDownDashIcon />} />
-          <CardSubtitle subtitle="Saldo total do mês" />
+          <CardSubtitle subtitle="Despesas totais do mês" />
           <CardBody>
-            <p>
+            <p className={`text-xl font-bold text-red-500`}>
               {summary
                 ? Intl.NumberFormat('pt-BR', {
                     style: 'currency',
