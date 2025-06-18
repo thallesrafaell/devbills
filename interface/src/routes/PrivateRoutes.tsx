@@ -7,7 +7,7 @@ const PrivateRoutes = () => {
 
   // If the user is not authenticated, redirect to login
   if (!authState.user) {
-    return <Navigate to="/auth/login" replace />;
+    return <Navigate to="/auth/login" />;
   }
 
   return <Outlet />;

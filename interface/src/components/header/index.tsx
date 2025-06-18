@@ -1,6 +1,5 @@
 import { LogOutIcon, TrendingUp } from 'lucide-react';
-import { useNavigate } from 'react-router';
-import { useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 
 import { useAuth } from '../../context/AuthContext';
 
@@ -17,29 +16,29 @@ const Header = () => {
     }
   };
   return (
-    <header className="bg-gray-800 border-b border-gray-600">
+    <header className="bg-gray-800 border-b border-gray-600 py-2">
       <div className="flex items-center justify-between px-4 md:px-18 shadow-md">
-        <div className="flex items-center justify-center space-x-2 py-4">
+        <div className="flex items-center justify-center space-x-2 ">
           <TrendingUp className="h-6 w-6 text-primary-500 " />
           <h1 className="text-2xl font-bold text-primary-500">DevBills</h1>
         </div>
         <nav>
           <ul className="hidden md:flex space-x-4">
             <li>
-              <a
-                href="/dashboard"
+              <Link
+                to="/dashboard"
                 className={`${location.pathname === '/dashboard' ? 'text-primary-500  bg-primary-500/10 rounded-sm' : 'text-gray-400'} text-sm py-2 px-3 rounded-sm hover:text-primary-500 transition-all duration-200`}
               >
                 Dashboard
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="/transactions"
+              <Link
+                to="/transactions"
                 className={`${location.pathname === '/transactions' ? 'text-primary-500  bg-primary-500/10 rounded-sm' : 'text-gray-400'} text-sm py-2 px-3 rounded-sm hover:text-primary-500 transition-all duration-200`}
               >
                 Transações
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
