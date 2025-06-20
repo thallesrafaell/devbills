@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.1.1",
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
@@ -17,9 +18,12 @@
     "lucide-react": "^0.516.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.58.1",
+    "react-number-format": "^5.4.4",
     "react-router": "^7.6.2",
     "recharts": "^2.15.3",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.10",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

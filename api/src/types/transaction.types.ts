@@ -1,4 +1,4 @@
-import { TransactionType } from '@prisma/client';
+import { Transaction, TransactionType } from '@prisma/client';
 
 import { CategorySummary } from './catetgory.type';
 
@@ -18,6 +18,7 @@ export interface Summary {
   totalBalance: number;
   expenseByCategory: CategorySummary[];
   lastFourMonths: MonthSummary[];
+  recentTransactions: Transaction[];
 }
 
 export interface MonthSummary {
@@ -27,10 +28,3 @@ export interface MonthSummary {
   expense: number;
   balance: number;
 }
-
-//{
-//name: 'Março',
-//despesas: 3200,
-//receitas: 4500,
-//saldo: 1300, // receitas - despesas
-//}

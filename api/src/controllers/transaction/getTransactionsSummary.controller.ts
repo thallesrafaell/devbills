@@ -76,6 +76,18 @@ export const getTransactionsSummary = async (
         totalIncome += transaction.amount;
       }
     }
+    const recentTransactions = await prisma.transaction.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 5,
+      include: {
+        category: true,
+      },
+    });
 
     // Log the total income and expense for debugging
     const lastFourMonths = Array.from({ length: 4 }, (_, i) => {
@@ -87,7 +99,7 @@ export const getTransactionsSummary = async (
       const start = date.toDate();
       const end = date.endOf('month').toDate();
       return {
-        date, // keep the dayjs object for later use
+        date,
         month:
           date.format('MMMM').charAt(0).toUpperCase() +
           date.format('MMMM').slice(1),
@@ -165,6 +177,7 @@ export const getTransactionsSummary = async (
         }))
         .sort((a, b) => b.amount - a.amount),
       lastFourMonths: lastFourMonthsTransactions,
+      recentTransactions,
     };
 
     res.send(summary);
