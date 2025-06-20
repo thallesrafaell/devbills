@@ -1,0 +1,50 @@
+# Dockerfile
+
+# Stage 1: Build a aplicação (compila TypeScript para JavaScript)
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copia os arquivos de lock e package.json primeiro para otimizar o cache do Docker
+COPY package.json package-lock.json ./
+
+# Instala as dependências de produção e desenvolvimento
+RUN npm install
+
+# Copia o restante do código fonte
+COPY . .
+
+# Compila o projeto TypeScript.
+# Certifique-se de que seu package.json tenha um script 'build' (ex: "build": "tsc")
+RUN npm run build
+
+# Stage 2: Rodar a aplicação em um ambiente menor (sem dependências de dev)
+FROM node:18-alpine
+
+# Define o diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copia apenas os arquivos de package.json e package-lock.json
+COPY package.json package-lock.json ./
+
+# Instala apenas as dependências de produção para manter a imagem final pequena
+RUN npm install --only=production
+
+# Copia os arquivos compilados da stage 'builder'
+COPY --from=builder /app/dist ./dist # Ajuste 'dist' para o seu diretório de saída do TypeScript (ex: 'build')
+# Se você tiver outros arquivos necessários em runtime que não são compilados (ex: arquivos estáticos, templates)
+# COPIE-OS DA STAGE 'builder' também ou do contexto atual:
+# COPY --from=builder /app/sua-pasta-de-templates ./sua-pasta-de-templates
+
+# Expõe a porta que sua aplicação Node.js irá escutar.
+# A porta aqui deve ser a mesma definida no seu arquivo .env (PORT=3000)
+EXPOSE 3000
+
+# Define variáveis de ambiente no container (NÃO RECOMENDADO PARA SECRETS EM PROD)
+# Para variáveis de ambiente sensíveis, use volumes ou segredos do Docker em produção.
+# Aqui, para desenvolvimento, podemos passá-las diretamente.
+# Em produção, você deve usar mecanismos mais seguros.
+
+# Define o comando para iniciar a aplicação compilada
+# Assumindo que seu ponto de entrada compilado é dist/index.js (ou build/index.js)
+CMD ["node", "dist/index.js"] # Ajuste para o seu arquivo principal compilado

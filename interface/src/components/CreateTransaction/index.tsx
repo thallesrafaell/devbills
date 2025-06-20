@@ -84,7 +84,7 @@ const CreateTransactionModal = ({
       type: 'expense',
       description: '',
       amount: null,
-      date: new Date().toISOString().split('.')[0],
+      date: new Date().toISOString().split('T')[0], // Ensure date is yyyy-mm-dd for input[type="date"]
       categoryId: undefined,
     },
   });
@@ -172,7 +172,7 @@ const CreateTransactionModal = ({
         Preencha os detalhes da sua nova transação (receita ou despesa).
       </ModalDescription>
 
-      <ModalContent className="max-h-[calc(100vh-140px)] overflow-y-auto pr-2 custom-scrollbar">
+      <ModalContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
           {/* Campo Tipo de Transação */}
           <div>
