@@ -1,9 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
 
-import { api } from '../../services/api'; // Certifique-se de que o caminho está correto
+import { api } from '../../services/api';
 import { Modal, ModalContent, ModalDescription, ModalHeader } from '../modal';
 
 interface CreateTransactionModalProps {
@@ -15,7 +16,7 @@ interface CreateTransactionModalProps {
 interface Category {
   id: string;
   name: string;
-  type: 'income' | 'expense'; // As categorias da API precisam ter este campo
+  type: 'income' | 'expense';
 }
 
 const formatCurrency = (value: number | null | undefined): string => {
@@ -65,8 +66,6 @@ const schema = z.object({
   date: z.string().refine(value => !isNaN(Date.parse(value)), {
     message: 'Data inválida',
   }),
-  // categoryId se tornará obrigatório se o tipo for selecionado
-  // Podemos adicionar uma lógica de validação condicional com .superRefine se quiser garantir a seleção
   categoryId: z.string().optional(),
 });
 
@@ -86,7 +85,7 @@ const CreateTransactionModal = ({
       description: '',
       amount: null,
       date: new Date().toISOString().split('.')[0],
-      categoryId: undefined, // Garante que começa sem categoria selecionada
+      categoryId: undefined,
     },
   });
 
@@ -94,10 +93,11 @@ const CreateTransactionModal = ({
     const fetchCategories = async () => {
       try {
         const response = await api.get<Category[]>('/categories');
-        console.log('Categorias recebidas da API:', response.data);
         setCategories(response.data);
       } catch (error) {
-        console.error('Erro ao buscar categorias:', error);
+        toast.error(
+          'Erro ao buscar categorias. Recarregue a página e tente novamente.',
+        );
       }
     };
     fetchCategories();
@@ -111,7 +111,7 @@ const CreateTransactionModal = ({
     formState: { errors },
   } = form;
 
-  const selectedType = watch('type'); // 'expense' ou 'income'
+  const selectedType = watch('type');
   const amountValue = watch('amount');
 
   const amountInputRef = form.register('amount');
@@ -120,13 +120,10 @@ const CreateTransactionModal = ({
     formatCurrency(amountValue),
   );
 
-  // Filtra as categorias com base no tipo selecionado
   const filteredCategories = categories.filter(
     category => category.type === selectedType,
   );
 
-  // Efeito para resetar o categoryId se o tipo de transação mudar
-  // e a categoria selecionada não for mais válida para o novo tipo.
   useEffect(() => {
     const currentCategoryId = watch('categoryId');
     if (currentCategoryId) {
@@ -134,7 +131,7 @@ const CreateTransactionModal = ({
         cat => cat.id === currentCategoryId,
       );
       if (!isCurrentCategoryStillValid) {
-        setValue('categoryId', undefined); // Limpa a seleção da categoria
+        setValue('categoryId', undefined);
       }
     }
   }, [selectedType, filteredCategories, setValue, watch]);
@@ -148,22 +145,15 @@ const CreateTransactionModal = ({
       amount: unformatCurrency(displayAmount),
       date: formattedDate,
     };
-
-    console.log('Dados formatados para a API:', formattedData);
-
     api
       .post('/transactions', formattedData)
       .then(response => {
-        console.log('Transação criada com sucesso:', response.data);
-        closeNewTransactionModal(); // Fecha o modal após sucesso
-        onSuccess(); // Chamado APENAS NO SUCESSO!
+        closeNewTransactionModal();
+        onSuccess();
+        toast.success('Transação criada com sucesso!');
       })
       .catch(error => {
-        console.error(
-          'Erro ao criar transação:',
-          error.response?.data || error.message,
-        );
-        alert(
+        toast.error(
           `Erro ao criar transação: ${error.response?.data?.message || 'Verifique o console.'}`,
         );
       });

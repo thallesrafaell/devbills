@@ -1,5 +1,6 @@
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import Button from '../components/button';
 import { Card, CardBody, CardHeader } from '../components/card';
@@ -74,9 +75,9 @@ const Transaction = () => {
     try {
       await api.delete(`/transactions/${transactionId}`);
       fetchTransactions();
+      toast.success('Transação excluída com sucesso!');
     } catch (error) {
-      console.error('Erro ao excluir transação:', error);
-      alert('Erro ao excluir transação. Tente novamente.');
+      toast.error('Erro ao excluir transação: ' + error);
     }
   };
 
