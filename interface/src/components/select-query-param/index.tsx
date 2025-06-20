@@ -16,13 +16,13 @@ const SelectQueryParam = ({
   onChangeMonth,
 }: SelectQueryParamProps) => {
   const handlePrevious = () => {
-    const currentDate = new Date(year, month - 1, 1); // Mês em JS é base-0
+    const currentDate = new Date(year, month - 1, 1);
     const previousMonth = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth() - 1,
       1,
     );
-    onChangeMonth(previousMonth.getMonth() + 1); // +1 pois estamos usando mês base-1 na prop
+    onChangeMonth(previousMonth.getMonth() + 1);
     onChangeYear(previousMonth.getFullYear());
   };
 
@@ -37,7 +37,6 @@ const SelectQueryParam = ({
     onChangeYear(nextMonth.getFullYear());
   };
 
-  // Handlers para os selects
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onChangeYear(Number(e.target.value));
   };
@@ -56,6 +55,7 @@ const SelectQueryParam = ({
       >
         <ArrowBigLeft className="text-primary-500" />
       </button>
+      {/* Aqui as classes serão passadas implicitamente pelos estilos internos do MonthSelect/YearSelect */}
       <MonthSelect value={month} onChange={handleMonthChange} />
       <YearSelect value={year} onChange={handleYearChange} />
       <button
