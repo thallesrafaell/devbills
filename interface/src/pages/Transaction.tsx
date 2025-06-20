@@ -76,8 +76,8 @@ const Transaction = () => {
       await api.delete(`/transactions/${transactionId}`);
       fetchTransactions();
       toast.success('Transação excluída com sucesso!');
-    } catch (error) {
-      toast.error('Erro ao excluir transação: ' + error);
+    } catch (error: any) {
+      toast.error(`Erro ao excluir transação: ${error.message}`);
     }
   };
 
@@ -95,7 +95,6 @@ const Transaction = () => {
 
   const formatDate = (isoDateString: string) => {
     const date = new Date(isoDateString);
-
     return date.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
   };
 
@@ -107,7 +106,7 @@ const Transaction = () => {
   };
 
   return (
-    <div className="px-4 md:px-20 w-full">
+    <div className="px-4 md:px-20 w-full relative min-h-[calc(100vh-80px)] overflow-x-hidden">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4">
         <div>
           <h2 className="flex gap-2 text-2xl font-bold text-gray-200  flex-col">
@@ -128,14 +127,17 @@ const Transaction = () => {
             !
           </p>
         </div>
-        <Button onClick={openNewTransactionModal}>
+        <Button onClick={openNewTransactionModal} className="hidden md:flex">
           <PlusIcon className="w-4 h-4 mr-2" />
           Nova Transação
         </Button>
       </div>
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4">
-        {/** Search */}
-        <div className="mb-4">
+      {/* --- AQUI ESTÁ A MUDANÇA PARA TRATAR O OVERFLOW NO MOBILE --- */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4 md:gap-0">
+        {/** Search Input */}
+        <div className="w-full md:w-auto mb-4 md:mb-0">
+          {' '}
+          {/* w-full para mobile, mb-4 apenas para mobile */}
           <input
             type="text"
             placeholder="Buscar transações..."
@@ -144,14 +146,18 @@ const Transaction = () => {
             onChange={e => setSearchTerm(e.target.value)}
           />
         </div>
-        <SelectQueryParam
-          onChangeYear={setYear}
-          onChangeMonth={setMonth}
-          year={year}
-          month={month}
-        />
+        {/* SelectQueryParam para Mes/Ano */}
+        <div className="w-full md:w-auto">
+          {' '}
+          {/* w-full para mobile, envolve SelectQueryParam */}
+          <SelectQueryParam
+            onChangeYear={setYear}
+            onChangeMonth={setMonth}
+            year={year}
+            month={month}
+          />
+        </div>
       </div>
-
       {/** Tabela de transações / Mensagens de estado */}
       <div className="overflow-x-auto">
         {isLoading ? (
@@ -176,7 +182,6 @@ const Transaction = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* As transações já estarão ordenadas aqui */}
                 {filteredTransactions.map(transaction => (
                   <tr key={transaction.id}>
                     <td className="p-2 text-center">
@@ -269,12 +274,18 @@ const Transaction = () => {
           </>
         )}
       </div>
-
       <CreateTransactionModal
         isNewTransactionModalOpen={isNewTransactionModalOpen}
         closeNewTransactionModal={closeNewTransactionModal}
         onSuccess={fetchTransactions}
       />
+      <button
+        className="fixed bottom-6 right-6 bg-primary-500 text-white p-4 rounded-full shadow-lg hover:bg-primary-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-75 md:hidden"
+        aria-label="Adicionar nova transação"
+        onClick={openNewTransactionModal}
+      >
+        <PlusIcon className="w-6 h-6" />
+      </button>
     </div>
   );
 };
