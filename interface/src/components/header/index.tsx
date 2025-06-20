@@ -1,6 +1,6 @@
 import { LogOutIcon, MenuIcon, TrendingUp, XIcon } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router'; // Use 'react-router-dom' para Link e useNavigate
 
 import { useAuth } from '../../context/AuthContext';
 
@@ -22,6 +22,23 @@ const Header = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  // --- FUNÇÃO AUXILIAR PARA GERAR INICIAIS ---
+  const getUserInitials = (displayName: string | null | undefined): string => {
+    if (!displayName) {
+      return '??'; // Fallback se não tiver nome
+    }
+    const parts = displayName.split(' ');
+    let initials = '';
+    if (parts.length > 0 && parts[0]) {
+      initials += parts[0][0]; // Primeira letra do primeiro nome
+    }
+    if (parts.length > 1 && parts[1]) {
+      initials += parts[1][0]; // Primeira letra do segundo nome (se existir)
+    }
+    return initials.toUpperCase();
+  };
+  // --- FIM DA FUNÇÃO AUXILIAR ---
 
   return (
     <header className="bg-gray-800 border-b border-gray-600 py-2">
@@ -67,11 +84,19 @@ const Header = () => {
         {authState.user && (
           <div className="hidden md:flex items-center gap-5 md:gap-4">
             <div className="flex items-center gap-2">
-              <img
-                src={authState.user.photoURL || ''}
-                alt={authState.user.displayName || ''}
-                className="h-7 w-7 rounded-full border-primary-500/60 border-1 object-cover"
-              />
+              {/* --- FALLBACK PARA IMAGEM (DESKTOP) --- */}
+              {authState.user.photoURL ? (
+                <img
+                  src={authState.user.photoURL}
+                  alt={authState.user.displayName || 'Avatar do Usuário'}
+                  className="h-7 w-7 rounded-full border-primary-500/60 border-1 object-cover"
+                />
+              ) : (
+                <div className="h-7 w-7 rounded-full border-primary-500/60 border-1 bg-gray-600 flex items-center justify-center text-xs font-semibold text-gray-200">
+                  {getUserInitials(authState.user.displayName)}
+                </div>
+              )}
+              {/* --- FIM DO FALLBACK --- */}
               <span className="hidden md:block text-sm text-gray-400">
                 {authState.user.displayName}
               </span>
@@ -136,11 +161,21 @@ const Header = () => {
                 <>
                   <li className="mt-auto pt-4 border-t border-gray-700">
                     <div className="flex items-center gap-2 mb-2">
-                      <img
-                        src={authState.user.photoURL || ''}
-                        alt={authState.user.displayName || ''}
-                        className="h-7 w-7 rounded-full border-primary-500/60 border-1 object-cover"
-                      />
+                      {/* --- FALLBACK PARA IMAGEM (MOBILE) --- */}
+                      {authState.user.photoURL ? (
+                        <img
+                          src={authState.user.photoURL}
+                          alt={
+                            authState.user.displayName || 'Avatar do Usuário'
+                          }
+                          className="h-7 w-7 rounded-full border-primary-500/60 border-1 object-cover"
+                        />
+                      ) : (
+                        <div className="h-7 w-7 rounded-full border-primary-500/60 border-1 bg-gray-600 flex items-center justify-center text-xs font-semibold text-gray-200">
+                          {getUserInitials(authState.user.displayName)}
+                        </div>
+                      )}
+                      {/* --- FIM DO FALLBACK --- */}
                       <span className="text-sm text-gray-400">
                         {authState.user.displayName}
                       </span>
