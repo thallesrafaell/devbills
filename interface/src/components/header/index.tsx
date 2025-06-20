@@ -23,22 +23,20 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // --- FUNÇÃO AUXILIAR PARA GERAR INICIAIS ---
   const getUserInitials = (displayName: string | null | undefined): string => {
     if (!displayName) {
-      return '??'; // Fallback se não tiver nome
+      return '??';
     }
     const parts = displayName.split(' ');
     let initials = '';
     if (parts.length > 0 && parts[0]) {
-      initials += parts[0][0]; // Primeira letra do primeiro nome
+      initials += parts[0][0];
     }
     if (parts.length > 1 && parts[1]) {
-      initials += parts[1][0]; // Primeira letra do segundo nome (se existir)
+      initials += parts[1][0];
     }
     return initials.toUpperCase();
   };
-  // --- FIM DA FUNÇÃO AUXILIAR ---
 
   return (
     <header className="bg-gray-800 border-b border-gray-600 py-2">
@@ -96,7 +94,6 @@ const Header = () => {
                   {getUserInitials(authState.user.displayName)}
                 </div>
               )}
-              {/* --- FIM DO FALLBACK --- */}
               <span className="hidden md:block text-sm text-gray-400">
                 {authState.user.displayName}
               </span>
@@ -175,7 +172,6 @@ const Header = () => {
                           {getUserInitials(authState.user.displayName)}
                         </div>
                       )}
-                      {/* --- FIM DO FALLBACK --- */}
                       <span className="text-sm text-gray-400">
                         {authState.user.displayName}
                       </span>
